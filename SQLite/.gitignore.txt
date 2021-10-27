@@ -1,0 +1,10 @@
+.idea
+.settings
+/bin
+/target
+.classpath
+.project
+TotalCross.iml
+app
+chime
+help
