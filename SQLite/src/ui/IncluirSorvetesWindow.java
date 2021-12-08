@@ -13,6 +13,7 @@ import totalcross.ui.Window;
 import totalcross.ui.dialog.MessageBox;
 import totalcross.ui.event.ControlEvent;
 import totalcross.ui.event.Event;
+import util.ScreenToDomain;
 
 public class IncluirSorvetesWindow extends Window {
 
@@ -25,12 +26,16 @@ public class IncluirSorvetesWindow extends Window {
 	private Button btAtualizar;
 	private Button btExcluir;
 	
+	private ScreenToDomain screen;
+	
 	// Declara o DAO
 	private SorveteDAO sorveteDAO;
 	
 	private boolean atualizando;
 	
 	public IncluirSorvetesWindow() {
+		
+		screen = new ScreenToDomain();
 		
 		this.atualizando = false;
 		
@@ -121,7 +126,7 @@ public class IncluirSorvetesWindow extends Window {
 	
 	public void insertSorvete() {
 		try {
-			Sorvete sorvete = screenToDomain();
+			Sorvete sorvete = screen.sorveteScreenToDomain(editSabor.getText(), editValor.getText(), editEstoque.getText());
 			if(sorvete == null) return;
 			// Faz uso do DAO
 			if(sorveteDAO.insertSorvete(sorvete)) {
@@ -136,7 +141,7 @@ public class IncluirSorvetesWindow extends Window {
 	
 	public void atualizarSorvete() {
 		try {
-			Sorvete sorvete = screenToDomain();
+			Sorvete sorvete = screen.sorveteScreenToDomain(editSabor.getText(), editValor.getText(), editEstoque.getText());
 			if(sorvete == null) return;
 			// Faz uso do DAO
 			if(sorveteDAO.atualizarSorvete(sorvete)) {
@@ -151,73 +156,14 @@ public class IncluirSorvetesWindow extends Window {
 	
 	public void excluirSorvete() {
 		try {
-			Sorvete sorvete = screenToDomain();
+			Sorvete sorvete = screen.sorveteScreenToDomain(editSabor.getText(), editValor.getText(), editEstoque.getText());
 			if(sorvete == null) return;
 			// Faz uso do DAO
 			if(sorveteDAO.excluirSorvete(sorvete)) {
 				new MessageBox("Info", "Sorvete Excluído!").popup();
 			}
-		} catch (SQLException e) {
-			Vm.debug(e.getMessage());
 		} catch (Exception e) {
 			Vm.debug(e.getMessage());
 		}
-	}
-	
-	public Sorvete screenToDomain() throws Exception {
-		String sabor = editSabor.getText();
-		String valor = editValor.getText();
-		String estoque = editEstoque.getText();
-		// Caso o método validateFields retorne false, entra no if e dá esse return, que não termina a execução
-		if(!validateFields(sabor, valor, estoque)) throw new Exception("Campos inválidos");
-		
-		Sorvete sorvete = createDomain(sabor, valor, estoque);
-		return sorvete;		
-	}
-	
-	private Sorvete createDomain(String sabor, String valor, String estoque) {
-		// Declara as variáveis double e depois substitui as vírgulas das strings por ponto,
-		// para fazer o parse para double, que só aceita ponto em seus valores
-		double valorAsDouble = 0;
-		double estoqueAsDouble = 0;
-		try {
-			valor = valor.replace(",", ".");
-			valorAsDouble = Double.parseDouble(valor);
-			estoque = estoque.replace(",", ".");
-			estoqueAsDouble = Double.parseDouble(estoque);
-		} catch(Exception e) {
-			Vm.debug(e.getMessage());
-			return null;
-		}
-		
-		// Chama o objeto Sorvete e faz as atribuições de acordo com os valores passados e seus atributos
-		Sorvete sorvete = new Sorvete();
-		sorvete.sabor = sabor;
-		sorvete.valor = valorAsDouble;
-		sorvete.estoque = estoqueAsDouble;
-		return sorvete;
-	}
-	
-	// Criar evento do botão inserir. Nele, vamos obter os valores digitados pelos usuários,
-	// mas vamos evitar a inserção de valores vazios. Passamos uma mensagem através de um MessageBox, 
-	// caso o valor seja vazio, contendo o Título e a Mensagem. Além disso, dessa forma, o método retorna,
-	// sem terminar a execução
-	private boolean validateFields(String sabor, String valor, String estoque) {
-		if(sabor.isEmpty()) {
-			new MessageBox("Atenção", "Digite um sabor!").popup();
-			return false;
-		}
-		
-		if(valor.isEmpty()) {
-			new MessageBox("Atenção", "Digite um valor!").popup();
-			return false;
-		}
-		
-		if(estoque.isEmpty()) {
-			new MessageBox("Atenção", "Digite o estoque!").popup();
-			return false;
-		}
-		
-		return true;
 	}
 }

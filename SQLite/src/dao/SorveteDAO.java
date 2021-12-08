@@ -105,4 +105,24 @@ public class SorveteDAO {
 			 throw e;
 		 }
 	}
+	
+	public List<Sorvete> findAllSaborSorvetes() throws SQLException {
+		List<Sorvete> sorveteList = new ArrayList<>();
+		 try {
+			 Statement st = DatabaseManager.getConnection().createStatement();
+			 ResultSet rs = st.executeQuery("SELECT SABOR FROM SORVETES");
+			 
+			 while(rs.next()) {
+				 Sorvete sorvete = new Sorvete();
+				 sorvete.sabor = rs.getString(1);
+				 sorveteList.add(sorvete);
+			 }
+			 st.close();
+			 rs.close();
+			 return sorveteList;
+		 } catch(Exception e) {
+			 Vm.debug(e.getMessage());
+			 throw e;
+		 }
+	}
 }

@@ -44,6 +44,8 @@ public class DatabaseManager {
 	public static void loadTabelas() throws SQLException {
 		Statement st = getConnection().createStatement();
 		st.execute("CREATE TABLE IF NOT EXISTS SORVETES(SABOR VARCHAR, VALOR NUMERIC, ESTOQUE NUMERIC)");
+		st.execute("CREATE TABLE IF NOT EXISTS VENDAS(CDVENDA NUMERIC, VALORTOTAL NUMERIC, QTOTALVENDIDA NUMERIC)");
+		st.execute("CREATE TABLE IF NOT EXISTS ITENS(CDITEM NUMERIC, CDVENDA NUMERIC, SABOR VARCHAR, VALORTOTAL NUMERIC, QTOTALVENDIDA NUMERIC)");
 		st.close();
 	}
 }

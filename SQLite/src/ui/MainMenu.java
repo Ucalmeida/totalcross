@@ -12,17 +12,20 @@ import util.DatabaseManager;
 public class MainMenu extends MainWindow {
 
 	private Button btSorvetes;
+	private Button btVendas;
 	
 	public MainMenu() throws SQLException {
 		
 		// Serve para inicializar as tabelas do banco
 		DatabaseManager.loadTabelas();
 		btSorvetes = new Button("Sorvetes");
+		btVendas = new Button("Vender");
 	}
 	
 	@Override
 	public void initUI() {
 		add(btSorvetes, LEFT + 10, TOP + 10, FILL - 10, PREFERRED);
+		add(btVendas, LEFT + 10, AFTER + 10, FILL -10, PREFERRED);
 	}
 	
 	// Instancia a janela Incluir Sorvetes através do método popup
@@ -40,6 +43,13 @@ public class MainMenu extends MainWindow {
 					ListarSorvetesWindow listarSorvetes = new ListarSorvetesWindow();
 					listarSorvetes.popup();
 				} catch (SQLException e) {
+					Vm.debug(e.getMessage());
+				}
+			} else if(event.target == btVendas) {
+				try {
+					ListarVendaSorvetesWindow listarVendas = new ListarVendaSorvetesWindow();
+					listarVendas.popup();
+				} catch(SQLException e) {
 					Vm.debug(e.getMessage());
 				}
 			}
